@@ -1,0 +1,78 @@
+# CNN oluşturma
+# Gerekli Kütüphaneler
+from keras.models import Sequential
+from keras.layers import Convolution2D
+from keras.layers import MaxPooling2D
+from keras.layers import Flatten
+from keras.layers import Dense, Dropout
+from keras import optimizers
+from keras.layers import GaussianNoise
+from keras.callbacks import ModelCheckpoint
+
+# CNN başlatma
+classifier = Sequential()
+
+# Konvolüsyon tabakası(bu tabaka bir çıkış tensörü üretmeye yardımcı olan katmanlar girişi ile rüzgar olan bir konvolüsyon çekirdeği oluşturur.)
+classifier.add(Convolution2D(32, 3,  3, input_shape = (64, 64, 3), activation = 'relu'))
+
+# Havuzlama
+classifier.add(MaxPooling2D(pool_size =(2,2)))
+classifier.add(GaussianNoise(0.1))#gürültü ekleme
+
+# 2.Konvolüsyon tabakası ekleme
+classifier.add(Convolution2D(32, 3,  3, activation = 'relu'))
+classifier.add(MaxPooling2D(pool_size =(2,2)))#zamansal veriler için maximum havuzlama işlemi 
+classifier.add(GaussianNoise(0.1))
+
+
+# 3.Konvolüsyon tabakası ekleme
+classifier.add(Convolution2D(64, 3,  3, activation = 'relu'))
+classifier.add(MaxPooling2D(pool_size =(2,2)))
+classifier.add(GaussianNoise(0.1))
+
+classifier.add(Flatten())
+
+#Tam Bağlantı
+classifier.add(Dense(256, activation = 'relu'))
+classifier.add(Dropout(0.5))
+classifier.add(Dense(26, activation = 'softmax'))
+
+#CNN derleme
+classifier.compile(optimizer = optimizers.SGD(lr = 0.01),loss = 'categorical_crossentropy',metrics = ['accuracy'])
+
+#Cnn'yi görüntüye sığdırmak
+from keras.preprocessing.image import ImageDataGenerator
+train_datagen = ImageDataGenerator(rescale=1./255,shear_range=0.2,zoom_range=0.2,horizontal_flip=True)
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+training_set = train_datagen.flow_from_directory('mydata/training_set',target_size=(64, 64),batch_size=32,class_mode='categorical')
+
+test_set = test_datagen.flow_from_directory('mydata/test_set',target_size=(64, 64),batch_size=32,class_mode='categorical')
+
+modelCheckpoint = ModelCheckpoint("Trained_model_new3.h5", monitor="val_loss", save_best_only = True, verbose = 0, mode = "auto")
+
+model = classifier.fit_generator(training_set,steps_per_epoch=800,epochs=15,validation_data = test_set,validation_steps = 6500,callbacks = [modelCheckpoint])
+
+#Modeli kayıt etme
+classifier.save('Trained_model_new.h5')
+print(model.history.keys())
+import matplotlib.pyplot as plt
+
+# doğruluk geçmişi özeti
+plt.plot(model.history['acc'])
+plt.plot(model.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+
+# kayıp geçmişi özeti
+plt.plot(model.history['loss'])
+plt.plot(model.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
