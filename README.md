@@ -1,5 +1,5 @@
 # Sign Language Recognition
-Recognizing the sign language with real-time video assistance 
+Recognizing the sign language with real-time video assistance [Please click to read the article.](https://www.yckircaali.com/sign-language-recognition/)
   
 ## Requirements
 - Python 3.x
