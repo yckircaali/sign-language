@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 def nothing(x):
-    pass            #pass görmezden gel anlamına gelir
+    pass         
 
 image_x, image_y = 64,64
 
