@@ -1,16 +1,13 @@
-#kütüphaneler
 import cv2
 import time
 import numpy as np
 import os
 
 def nothing(x):
-    pass        #pass görmezden gel anlamına gelir
+    pass        
 
 image_x, image_y = 64, 64
 
-#os.path.exists belirtilen yolun var olup olmadığını kontrol eder
-#os.mkdir dosya oluşturmak için kullanılır
 def create_folder(folder_name):
     if not os.path.exists('./mydata/training_set/' + folder_name):
         os.mkdir('./mydata/training_set/' + folder_name)
@@ -19,7 +16,6 @@ def create_folder(folder_name):
 
 def capture_images(ges_name):
     create_folder(str(ges_name))
-    #kameradan görüntü yakalamak için kullanılır
     cam = cv2.VideoCapture(0)
     cv2.namedWindow("test")
     img_counter = 0
