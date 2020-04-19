@@ -3,7 +3,6 @@ from keras.models import load_model
 classifier = load_model('Trained_model_new.h5')
 classifier.evaluate()
 
-#Görüntü tahmini
 import numpy as np
 from keras.preprocessing import image
 img_name = input('Enter Image Name: ')
@@ -14,7 +13,7 @@ test_image = image.load_img(image_path, target_size=(200, 200))
 test_image = image.img_to_array(test_image)
 test_image = np.expand_dims(test_image, axis = 0)
 result = classifier.predict(test_image)
-#training_set.class indeksleri
+
 print('Predicted Sign is:')
 print('')
 if result[0][0] == 1:
@@ -69,4 +68,3 @@ elif result[0][24] == 1:
        return 'Y'
 elif result[0][25] == 1:
        return 'Z'
-
